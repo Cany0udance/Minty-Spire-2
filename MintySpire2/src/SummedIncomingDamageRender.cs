@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Models.Powers;
@@ -20,6 +21,7 @@ public static class SummedIncomingDamageRender
     private const float RightPadding = 6f;
 
     private static readonly FieldInfo CreatureField = AccessTools.Field(typeof(NHealthBar), "_creature");
+    private static readonly List<WeakReference<NHealthBar>> ValidBars = new();
 
     /// <summary>
     ///     After a creature is assigned, create label node if it doesn't exist.
@@ -30,6 +32,17 @@ public static class SummedIncomingDamageRender
     {
         CreateLabelIfNotExist(__instance);
     }
+    
+    /// <summary>
+    ///     Refresh labels when a creature death is fired to recalculate incoming damage immediately.
+    /// </summary>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Creature), nameof(Creature.InvokeDiedEvent))]
+    public static void InvokeDiedEvent_Postfix()
+    {
+        RefreshValidBars();
+    }
+
 
     /// <summary>
     ///     Whenever the bar is updated, update the text display (this is overkill)
@@ -38,6 +51,7 @@ public static class SummedIncomingDamageRender
     [HarmonyPatch(nameof(NHealthBar.RefreshValues))]
     public static void RefreshValues_Postfix(NHealthBar __instance)
     {
+        RegisterValidBar(__instance);
         RefreshVisibilityAndText(__instance);
     }
 
@@ -57,7 +71,7 @@ public static class SummedIncomingDamageRender
     /// <returns>bool: Was label created</returns>
     private static bool CreateLabelIfNotExist(NHealthBar bar)
     {
-        if (bar == null || bar.HasNode(RightTextNodeName))
+        if (bar.HasNode(RightTextNodeName))
             return false;
 
         // Parent to the same node that holds the bar so coordinates are consistent.
@@ -132,7 +146,10 @@ public static class SummedIncomingDamageRender
         {
             label.Text = $"←{incomingDamage}";
             label.Visible = true;
+            return;
         }
+
+        label.Visible = false;
     }
 
     /// <summary>
@@ -157,4 +174,42 @@ public static class SummedIncomingDamageRender
 
         return incomingDamage;
     }
+    
+    /*
+     * NODE HOUSEKEEPING
+     */
+    private static void RefreshValidBars()
+    {
+        for (var i = ValidBars.Count - 1; i >= 0; i--)
+        {
+            if (!ValidBars[i].TryGetTarget(out var bar) || !GodotObject.IsInstanceValid(bar))
+            {
+                ValidBars.RemoveAt(i);
+                continue;
+            }
+
+            RefreshVisibilityAndText(bar);
+        }
+    }
+
+    private static void RegisterValidBar(NHealthBar bar)
+    {
+        if (!GodotObject.IsInstanceValid(bar))
+            return;
+
+        for (var i = ValidBars.Count - 1; i >= 0; i--)
+        {
+            if (!ValidBars[i].TryGetTarget(out var existingBar) || !GodotObject.IsInstanceValid(existingBar))
+            {
+                ValidBars.RemoveAt(i);
+                continue;
+            }
+
+            if (ReferenceEquals(existingBar, bar))
+                return;
+        }
+
+        ValidBars.Add(new WeakReference<NHealthBar>(bar));
+    }
+
 }
