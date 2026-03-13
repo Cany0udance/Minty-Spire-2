@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -6,9 +7,9 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.RestSite;
 using MegaCrit.Sts2.Core.Nodes.RestSite;
 using MegaCrit.Sts2.Core.Rooms;
-using MintySpire2.MintySpire2.src.util;
+using MintySpire2.util;
 
-namespace MintySpire2.MintySpire2.src;
+namespace MintySpire2;
 
 /// <summary>
 ///     Harmony patches for NRestSiteButton.

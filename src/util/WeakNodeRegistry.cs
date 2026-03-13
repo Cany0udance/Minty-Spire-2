@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Godot;
 
-namespace MintySpire2.MintySpire2.src.util;
+namespace MintySpire2.util;
 
 /// <summary>
 ///     Small helper for tracking Godot nodes through weak references.

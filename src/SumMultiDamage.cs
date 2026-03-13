@@ -4,7 +4,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 
-namespace MintySpire2.MintySpire2.src;
+namespace MintySpire2;
 
 /// <summary>
 ///     Patches MultiAttackIntent.GetIntentLabel to change the Repeat token from:

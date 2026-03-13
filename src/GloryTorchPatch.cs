@@ -4,7 +4,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
-namespace MintySpire2.MintySpire2.src;
+namespace MintySpire2;
 
 /**
  * Credits to cany0udance, this allows Torches to be clicked to toggle their state.

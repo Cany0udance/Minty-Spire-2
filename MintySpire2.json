@@ -1,0 +1,11 @@
+{
+  "id": "MintySpire2",
+  "name": "Minty Spire 2",
+  "author": "erasels",
+  "description": "QoL compilation of small tweaks for the sake of UX.",
+  "version": "v1.0.0",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": ["BaseLib"],
+  "affects_gameplay": false
+}

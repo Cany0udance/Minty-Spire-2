@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
-using MintySpire2.MintySpire2.src.util;
+using MintySpire2.util;
 
-namespace MintySpire2.MintySpire2.src;
+namespace MintySpire2;
 
 public class FasterShufflePatch
 {
@@ -15,11 +16,7 @@ public class FasterShufflePatch
         return 0.5f;
     }
     
-    
-    
-    
     //Transpiler patch
-    //With extra because it's an async method. Should be reduced if BaseLib is added to dependencies
     [HarmonyPatch]
     public static class CardPileCmdShufflePatch
     {
@@ -32,6 +29,7 @@ public class FasterShufflePatch
             return normalTime *  GetMultiplier();
         }
         
+        [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codeMatcher = new CodeMatcher(instructions);

@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using Godot;
@@ -13,9 +16,9 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.ValueProps;
-using MintySpire2.MintySpire2.src.util;
+using MintySpire2.util;
 
-namespace MintySpire2.MintySpire2.src;
+namespace MintySpire2;
 
 [HarmonyPatch(typeof(NPower))]
 static class TwoAmountPowers
@@ -161,19 +164,10 @@ static class TwoAmountPowers
         static class SpecificFixes
         {
             private static readonly Dictionary<MethodBase, HashSet<Type>> AfterHookPowers = new() {
-                { typeof(Hook).Method(nameof(Hook.AfterCardPlayed)).PatchAsync(), [
-                    typeof(PaleBlueDotPower),
-                ] },
-                { typeof(Hook).Method(nameof(Hook.AfterPowerAmountChanged)).PatchAsync(), [
-                    typeof(VulnerablePower),
-                    typeof(WeakPower),
-                ] },
-                { typeof(Hook).Method(nameof(Hook.AfterBlockGained)).PatchAsync(), [
-                    typeof(UnmovablePower),
-                ] },
-                { typeof(Hook).Method(nameof(Hook.AfterPlayerTurnStart)).PatchAsync(), [
-                    typeof(UnmovablePower),
-                ] },
+                { typeof(Hook).Method(nameof(Hook.AfterCardPlayed)).PatchAsync(), [typeof(PaleBlueDotPower)] },
+                { typeof(Hook).Method(nameof(Hook.AfterPowerAmountChanged)).PatchAsync(), [typeof(VulnerablePower), typeof(WeakPower)] },
+                { typeof(Hook).Method(nameof(Hook.AfterBlockGained)).PatchAsync(), [typeof(UnmovablePower)] },
+                { typeof(Hook).Method(nameof(Hook.AfterPlayerTurnStart)).PatchAsync(), [typeof(UnmovablePower)] },
             };
         
             private static void AfterHook(AbstractModel model, MethodBase method)

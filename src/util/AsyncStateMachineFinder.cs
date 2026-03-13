@@ -1,8 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 
-namespace MintySpire2.MintySpire2.src.util;
+namespace MintySpire2.util;
 
 public static class AsyncStateMachineFinder
 {
@@ -12,7 +13,6 @@ public static class AsyncStateMachineFinder
         if (stateMachineAttribute == null) {
             throw new ArgumentException($"{methodBase.FullDescription()} is not an async method");
         }
-        return stateMachineAttribute.StateMachineType.GetMethod("MoveNext",
-                BindingFlags.NonPublic | BindingFlags.Instance)!;
+        return stateMachineAttribute.StateMachineType.GetMethod("MoveNext", BindingFlags.NonPublic | BindingFlags.Instance)!;
     }
 }

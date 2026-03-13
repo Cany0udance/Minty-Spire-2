@@ -1,7 +1,7 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
 
-namespace MintySpire2.MintySpire2.src;
+namespace MintySpire2;
 
 [ModInitializer(nameof(InitializeMod))]
 public static class ModInitializer

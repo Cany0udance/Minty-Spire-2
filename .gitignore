@@ -1,3 +1,16 @@
+.godot/
+bin/
+/android/
+.git/
+.idea/
+.vs/
+publish/
+Properties/
+packages/
+.editorconfig
+*cs.uid
+*.user
+
 # Godot 4+ specific ignores
 .godot/
 
