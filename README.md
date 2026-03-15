@@ -9,6 +9,7 @@ Successor of the StS1 mod with the same name. This is a compilation of small qua
 - Show ascenscion effects when hovering the character portrait in the top bar (kiooeht)
 - Display a second amount on powers that track multiple values (kiooeht)
 - Increase animation speed of shuffling discard into draw pile (pandemonium)
+- Make's the Pael's Eye relic look at the mouse cursor (mangochicken)
 
 ## Installation
 Make a folder called `mods` in the same directory as your sts2.exe `Steam\steamapps\common\Slay the Spire 2` and unzip the contents of the release (once available) into that folder or a subdirectory within that folder.

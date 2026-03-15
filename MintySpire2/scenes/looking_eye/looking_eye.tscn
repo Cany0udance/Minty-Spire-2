@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://bjv3wvo0wyx52"]
+
+[ext_resource type="Texture2D" uid="uid://cxjtrdw0mproj" path="res://MintySpire2/images/relics/paels_eye_mask.png" id="1_8tm3o"]
+[ext_resource type="Texture2D" uid="uid://bgapr4naf1cs" path="res://MintySpire2/images/relics/paels_eye_pupil.png" id="2_e68wi"]
+[ext_resource type="Script" uid="uid://b4wo24krbr7yl" path="res://MintySpire2/scenes/looking_eye/looking_eye.gd" id="3_rlwjn"]
+
+[node name="LookingEye" type="TextureRect"]
+clip_children = 1
+custom_minimum_size = Vector2(60, 60)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_8tm3o")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Pupil" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_e68wi")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("3_rlwjn")
