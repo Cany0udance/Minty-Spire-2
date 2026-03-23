@@ -8,7 +8,10 @@ using MegaCrit.Sts2.Core.Nodes.Screens.Shops;
 
 namespace MintySpire2;
 
-class CostPreview
+/**
+ * Credits to Ind-E, displays a small remaining gold (after hypothetical purchase) label below your current gold when hovering an item in the shop.
+ */
+class ShopCostPreview
 {
     static MegaLabel CostPreviewLabel = new MegaLabel();
     static bool initDone = false;

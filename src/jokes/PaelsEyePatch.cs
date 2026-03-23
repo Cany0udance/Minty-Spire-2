@@ -8,7 +8,11 @@ using MegaCrit.Sts2.Core.Nodes.Relics;
 using MegaCrit.Sts2.Core.Nodes.Screens.InspectScreens;
 using MegaCrit.Sts2.Core.Nodes.Screens.RelicCollection;
 
-namespace MintySpire2;
+namespace MintySpire2.jokes;
+
+/**
+ * Credits to Mangochicken, adds a pupil to the Pael's eye relic that follows the cursor.
+ */
 
 [HarmonyPatch]
 public class PaelsLookingEyePatch()

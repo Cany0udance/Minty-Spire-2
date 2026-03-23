@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using Godot;
@@ -18,7 +15,7 @@ using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.ValueProps;
 using MintySpire2.util;
 
-namespace MintySpire2;
+namespace MintySpire2.combat;
 
 /**
  * Credits to kiooeht, this displays a second amount for powers that require tracking multiple values.

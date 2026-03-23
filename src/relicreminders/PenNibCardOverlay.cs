@@ -1,4 +1,3 @@
-using System.Linq;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
@@ -9,9 +8,10 @@ using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Runs;
 
-namespace MintySpire2;
+namespace MintySpire2.relicreminders;
 
 /// <summary>
+///     Credits to book.
 ///     Adds a pen nib icon to attack cards in hand when Pen Nib is active.
 ///     Also makes those cards glow gold.
 /// </summary>

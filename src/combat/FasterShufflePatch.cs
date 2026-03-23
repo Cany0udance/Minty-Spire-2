@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MintySpire2.util;
 
-namespace MintySpire2;
+namespace MintySpire2.combat;
 
+/**
+ * Credits to Pandemonium, increases the discard to draw pile shuffling speed.
+ */
 public class FasterShufflePatch
 {
 

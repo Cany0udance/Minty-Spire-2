@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Rewards;
 namespace MintySpire2;
 
 /**
+ * Credits to kiooeht.
  * Changes the order of combat rewards so "special" card rewards (Thieving Hopper and Lantern Key) are below normal card
  * rewards. This is done because clicking rewards in their normal order causes a long delay while you wait for the
  * special card to stop covering up the middle card of the card reward.

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 
-namespace MintySpire2;
+namespace MintySpire2.combat;
 
 /// <summary>
 ///     Patches MultiAttackIntent.GetIntentLabel to change the Repeat token from:

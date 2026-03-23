@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using Godot;
+﻿using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
@@ -14,7 +12,7 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Runs;
 using MintySpire2.util;
 
-namespace MintySpire2;
+namespace MintySpire2.combat;
 
 /// <summary>
 ///     Adds a small text label to the Right of the health bar when the health bar is visible
