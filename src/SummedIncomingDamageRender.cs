@@ -137,7 +137,7 @@ public static class SummedIncomingDamageRender
 
     /// <summary>
     ///     Shows/hides the label and sets its text.
-    ///     Only visible when the health bar is visible, the creature is the player and its their turn.
+    ///     Only visible when the health bar is visible, the creature is the player, and it's their turn.
     /// </summary>
     private static void RefreshVisibilityAndText(NHealthBar bar)
     {
@@ -189,6 +189,9 @@ public static class SummedIncomingDamageRender
 
         // Knowledge demon end of turn damage
         incomingDamage += creature.Player!.Creature.GetPower<DisintegrationPower>()?.Amount ?? 0;
+        
+        // Constrict power
+        incomingDamage += creature.Player!.Creature.GetPower<ConstrictPower>()?.Amount ?? 0;
 
         return incomingDamage;
     }
