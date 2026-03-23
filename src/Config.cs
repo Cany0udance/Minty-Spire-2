@@ -10,4 +10,7 @@ public class Config: SimpleModConfig
     public static double ShuffleSpeed { get; set; } = 0.5;
     
     public static bool ShowIncomingDamage { get; set; } = true;
+    
+    [ConfigSection("misc")]
+    public static bool ChangeRewardOrder { get; set; } = true;
 }

@@ -15,6 +15,7 @@ static class SpecialCardRewardOrder
     [HarmonyPostfix]
     static void AfterNormalCardRewards(SpecialCardReward __instance, ref int __result)
     {
-        __result = 6;
+        if(Config.ChangeRewardOrder)
+            __result = 6;
     }
 }
