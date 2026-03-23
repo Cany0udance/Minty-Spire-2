@@ -4,7 +4,10 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.Nodes.Combat;
@@ -30,7 +33,7 @@ public static class SummedIncomingDamageRender
     /// </summary>
     [HarmonyPostfix]
     [HarmonyPatch(nameof(NHealthBar.SetCreature))]
-    public static void SetCreature_Postfix(NHealthBar __instance)
+    public static void CatchBarSet(NHealthBar __instance)
     {
         var player = LocalContext.GetMe(RunManager.Instance.State);
         if (player != null && __instance._creature?.Player == player)
@@ -40,22 +43,11 @@ public static class SummedIncomingDamageRender
     }
     
     /// <summary>
-    ///     Refresh labels when a creature death is fired to recalculate incoming damage immediately.
-    /// </summary>
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(Creature), nameof(Creature.InvokeDiedEvent))]
-    public static void InvokeDiedEvent_Postfix()
-    {
-        ValidBars.ForEachLive(RefreshVisibilityAndText);
-    }
-
-
-    /// <summary>
     ///     Whenever the bar is updated, update the text display (this is overkill)
     /// </summary>
     [HarmonyPostfix]
     [HarmonyPatch(nameof(NHealthBar.RefreshValues))]
-    public static void RefreshValues_Postfix(NHealthBar __instance)
+    public static void CatchBarRefresh(NHealthBar __instance)
     {
         var player = LocalContext.GetMe(RunManager.Instance.State);
         if (player != null && __instance._creature?.Player == player)
@@ -70,7 +62,7 @@ public static class SummedIncomingDamageRender
     /// </summary>
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NHealthBar), "SetHpBarContainerSizeWithOffsets")]
-    public static void SetHpBarContainerSizeWithOffsets_Postfix(NHealthBar __instance, Vector2 size)
+    public static void CatchBarResize(NHealthBar __instance, Vector2 size)
     {
         var player = LocalContext.GetMe(RunManager.Instance.State);
         if (player != null && __instance._creature?.Player == player)
@@ -169,6 +161,56 @@ public static class SummedIncomingDamageRender
 
         label.Visible = false;
     }
+    
+    /// <summary>
+    ///     Refresh labels when a creature death is fired to recalculate incoming damage immediately.
+    /// </summary>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Creature), nameof(Creature.InvokeDiedEvent))]
+    public static void CatchMonsterDeath()
+    {
+        ValidBars.ForEachLive(RefreshVisibilityAndText);
+    }
+    
+    /// <summary>
+    ///     Refresh labels if the hand changes in case end turn damage cards are added
+    /// </summary>
+    /// <param name="__instance"></param>
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(CardPile), "InvokeContentsChanged")]
+    private static void CatchHandChange(CardPile __instance)
+    {
+        if (__instance is { Type: PileType.Hand })
+        {
+            var player = LocalContext.GetMe(RunManager.Instance.State);
+            if (player?.PlayerCombatState == null) return;
+            ValidBars.ForEachLive(RefreshVisibilityAndText);
+        }
+    }
+
+    private static int GetIncomingCardDamage(Player player)
+    {
+        
+        var handPile = CardPile.Get(PileType.Hand, player);
+        if (handPile == null)
+            return 0;
+        
+        int totalDamage = 0;
+
+        foreach (var card in  handPile.Cards)
+        {
+            if (!CardTurnEndInspector.DoesTurnEndInHandCallDamage(card))
+                continue;
+            
+            foreach (var cvar in card.CanonicalVars)
+            {
+                if (cvar is HpLossVar or DamageVar)
+                    totalDamage += cvar.IntValue;
+            }
+        }
+
+        return totalDamage;
+    }
 
     /// <summary>
     ///     Calculate the incoming damage from common sources such as monsters and powers.
@@ -176,6 +218,8 @@ public static class SummedIncomingDamageRender
     /// <param name="creature">The Player creature that we'll calculate the incoming damage for.</param>
     private static int CalculateIncomingDamage(Creature creature)
     {
+        if (creature.CombatState == null) return 0;
+        
         // Collect incoming damage from all hittable monsters (can untargetable monsters attack?).
         var incomingDamage = 0;
         foreach (var hittableEnemy in creature.CombatState!.HittableEnemies)
@@ -183,15 +227,18 @@ public static class SummedIncomingDamageRender
             foreach (var intent in hittableEnemy.Monster.NextMove.Intents)
             {
                 if (intent.IntentType is IntentType.Attack or IntentType.DeathBlow)
-                    incomingDamage += ((AttackIntent)intent).GetTotalDamage(null, hittableEnemy); // Is null alright here?
+                    incomingDamage += ((AttackIntent)intent).GetTotalDamage([creature], hittableEnemy); // Is null alright here?
             }
         }
 
         // Knowledge demon end of turn damage
-        incomingDamage += creature.Player!.Creature.GetPower<DisintegrationPower>()?.Amount ?? 0;
+        incomingDamage += creature.GetPower<DisintegrationPower>()?.Amount ?? 0;
         
         // Constrict power
-        incomingDamage += creature.Player!.Creature.GetPower<ConstrictPower>()?.Amount ?? 0;
+        incomingDamage += creature.GetPower<ConstrictPower>()?.Amount ?? 0;
+        
+        // End turn self damage cards
+        incomingDamage += GetIncomingCardDamage(creature.Player!);
 
         return incomingDamage;
     }
