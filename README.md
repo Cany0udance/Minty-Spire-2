@@ -2,17 +2,27 @@
 Successor of the StS1 mod with the same name. This is a compilation of small quality of life tweaks that reduce friction without giving additional information the player wouldn't have normally or changing any system in the game.
 
 ## Current Features
-- Heal preview above the rest button at rest sites
+
+### Combat Visuals
 - Shows summed incoming damage next to your hp bar
 - Sums damage from multi attack intents
-- Make torches clickable to extiguish and light them (cany0udance)
-- Show ascenscion effects when hovering the character portrait in the top bar (kiooeht)
 - Display a second amount on powers that track multiple values (kiooeht)
 - Increase animation speed of shuffling discard into draw pile (pandemonium)
-- Make's the Pael's Eye relic look at the mouse cursor (mangochicken)
+
+### Relic Reminders
 - Adds an indicator to attacks when pen nib is active (book)
+- Make History Course pulse and display a card tooltip (kiooeht)
+
+### Other
+- Heal preview above the rest button at rest sites
 - Adds a preview of how much gold you will have after a purchase (Ind-E)
+- Show ascenscion effects when hovering the character portrait in the top bar (kiooeht)
 - Reorders combat rewards to stop special card rewards like Thieving Hopper from covering the normal card reward when clicked in default order (kiooeht)
+- Make torches clickable to extiguish and light them (cany0udance)
+- Make's the Pael's Eye relic look at the mouse cursor (mangochicken)
+
+## Configuration
+Some more invasive features can now be toggled via the mod settings. To access them, navigate to the mod menu via the options menu while on the main menu and then select Minty Spire 2 from the list. THere should be a gear icon in the top right, above the mod's image. Click that gear icon to access the menu.
 
 ## Installation
 Make a folder called `mods` in the same directory as your sts2.exe `Steam\steamapps\common\Slay the Spire 2` and unzip the contents of the release (once available) into that folder or a subdirectory within that folder.
