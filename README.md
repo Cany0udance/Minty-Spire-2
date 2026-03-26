@@ -10,7 +10,7 @@ Successor of the StS1 mod with the same name. This is a compilation of small qua
 - Increase animation speed of shuffling discard into draw pile (pandemonium)
 
 ### Relic Reminders
-- Adds an indicator to attacks when pen nib is active (book)
+- Adds an indicator to cards when Pen Nib, Tuning Fork or Galactic Dust would trigger (book & erasels)
 - Make History Course pulse and display a card tooltip (kiooeht)
 - Display relics near the end turn button if they would trigger if you end your turn now
 
