@@ -24,7 +24,7 @@ class ShopCostPreview
         var label = (MegaLabel)goldLabel.Duplicate();
 
         label.Visible = false;
-        label.AddThemeColorOverride(ThemeConstants.Label.fontColor, StsColors.red);
+        label.AddThemeColorOverride(ThemeConstants.Label.FontColor, StsColors.red);
         label.SetFontSize(18); // original font size is 32
 
         var parent = goldLabel.GetParent().GetParent().GetParent();

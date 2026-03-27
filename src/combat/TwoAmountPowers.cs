@@ -144,9 +144,9 @@ static class TwoAmountPowers
             }
             if (!string.IsNullOrEmpty(amount2.Amount2)) {
                 amount2Label.Visible = true;
-                amount2Label.AddThemeColorOverride(ThemeConstants.Label.fontColor, amount2.Color2 ?? __instance.Model.AmountLabelColor);
+                amount2Label.AddThemeColorOverride(ThemeConstants.Label.FontColor, amount2.Color2 ?? __instance.Model.AmountLabelColor);
                 amount2Label.SetTextAutoSize(amount2.Amount2);
-                var fontSize = amount2Label.GetThemeFontSize(ThemeConstants.Label.fontSize);
+                var fontSize = amount2Label.GetThemeFontSize(ThemeConstants.Label.FontSize);
                 amount2Label.Position = __instance._amountLabel.Position + new Vector2(0, -(fontSize + 2));
             }
         }
