@@ -95,7 +95,7 @@ public static class RestHPRender
         if (extra == null) return;
 
         var player = button.Option.Owner;
-        if (LocalContext.IsMe(player))
+        if (!LocalContext.IsMe(player))
         {
             extra.Visible = false;
             return;
