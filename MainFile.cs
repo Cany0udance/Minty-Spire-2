@@ -2,6 +2,7 @@ using BaseLib.Config;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
+using MintySpire2.util;
 
 namespace MintySpire2;
 
@@ -19,5 +20,7 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
 
         harmony.PatchAll();
+        
+        HookSubscriber.subscribe();
     }
 }

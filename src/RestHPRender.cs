@@ -1,18 +1,15 @@
-﻿using System;
-using System.Reflection;
-using Godot;
+﻿using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.RestSite;
 using MegaCrit.Sts2.Core.Nodes.RestSite;
-using MegaCrit.Sts2.Core.Rooms;
 using MintySpire2.util;
 
 namespace MintySpire2;
 
 /// <summary>
-///     Harmony patches for NRestSiteButton.
 ///     Adds an extra label above the button visuals, and for HealRestSiteOption shows:
 ///     current HP -> HP after healing (including relic modifiers).
 /// </summary>
@@ -20,8 +17,6 @@ namespace MintySpire2;
 public static class RestHPRender
 {
     private const string HealLabelNodeName = "ModHealPreviewLabel";
-
-    private static readonly PropertyInfo OwnerProperty = AccessTools.Property(typeof(RestSiteOption), "Owner");
 
     private static readonly WeakNodeRegistry<NRestSiteButton> ValidButtons = new();
 
@@ -99,9 +94,8 @@ public static class RestHPRender
         var extra = button.FindChild(HealLabelNodeName, true, false) as Label;
         if (extra == null) return;
 
-        // RestSiteOption.Owner is protected, using cached field
-        var ownerObj = OwnerProperty?.GetValue(button.Option);
-        if (ownerObj is not Player player)
+        var player = button.Option.Owner;
+        if (LocalContext.IsMe(player))
         {
             extra.Visible = false;
             return;
@@ -140,21 +134,9 @@ public static class RestHPRender
     /// <summary>
     ///     Catch HP changes to dynamically update the label (in case of Eternal Feather)
     /// </summary>
-    [HarmonyPatch(typeof(Creature))]
-    public static class CatchHPChange
+    public static void CatchHPChange(Creature creature)
     {
-        // Patch the property setter: Creature.set_CurrentHp(int)
-        private static MethodBase TargetMethod()
-        {
-            return AccessTools.PropertySetter(typeof(Creature), nameof(Creature.CurrentHp));
-        }
-
-        private static void Postfix(Creature __instance, int value)
-        {
-            // Can't check for RestSite because it's null at time of healing
-            if (__instance.CombatState?.RunState.CurrentRoom?.RoomType == RoomType.Monster) return;
-
-            ValidButtons.ForEachLive(UpdateExtraLabel);
-        }
+        if (!LocalContext.IsMe(creature) || Wiz.IsInCombat()) return;
+        ValidButtons.ForEachLive(UpdateExtraLabel);
     }
 }
