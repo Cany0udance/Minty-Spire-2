@@ -135,7 +135,11 @@ static class TwoAmountPowers
         if (__instance._model == null) return;
 
         var amount2Label = __instance.GetNode<MegaLabel>("Amount2Label");
-        amount2Label.Visible = false;
+        // If ITwoAmountPower exists, let BaseLib handle amount2Label visibility
+        var baselib = ModManager.GetLoadedMods().First(mod => mod.manifest?.id == BaseLib.MainFile.ModId).assembly;
+        if (baselib?.GetType("BaseLib.Abstracts.ITwoAmountPower") == null) {
+            amount2Label.Visible = false;
+        }
         DisplaySecondAmount.TryGetValue(__instance.Model.GetType(), out var func);
         if (func != null) {
             var amount2 = func.Invoke(__instance.Model);
