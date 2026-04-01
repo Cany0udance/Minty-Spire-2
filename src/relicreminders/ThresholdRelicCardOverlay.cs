@@ -1,4 +1,3 @@
-using System.Reflection;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Context;
@@ -7,6 +6,8 @@ using MegaCrit.Sts2.Core.Entities.Relics;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
+using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MintySpire2.util;
@@ -22,16 +23,14 @@ namespace MintySpire2.relicreminders;
 public static class ThresholdRelicCardOverlay
 {
     private const string IconContainerNodeName = "MintyThresholdRelicIcons";
-    private static readonly HashSet<NCard> TrackedCards = [];
-
     private static readonly List<Texture2D> _icons = new(4);
     
+    // Dynamically keep track of applicable relics
     [HarmonyPatch(typeof(CombatRoom), "StartCombat")]
     [HarmonyPostfix]
     static void CatchCombatStart(IRunState? runState)
     {
-        TrackedCards.Clear();
-        var me = LocalContext.GetMe(runState);
+        var me = Wiz.p();
         if (me == null) return;
         foreach (var relic in me.Relics)
         {
@@ -45,55 +44,42 @@ public static class ThresholdRelicCardOverlay
     [HarmonyPostfix]
     static void CatchCombatEnd()
     {
-        TrackedCards.Clear();
         var me = Wiz.p();
         if (me != null) me.RelicObtained -= IdentifyThresholdRelic;
     }
 
-    [HarmonyPatch(typeof(NCard), "UpdateVisuals")]
+    // Called whenever a card is added to the hand and destroyed when moved from it
+    [HarmonyPatch(typeof(NHandCardHolder), "Create")]
     [HarmonyPostfix]
-    private static void UpdateVisuals_Postfix(NCard __instance, PileType pileType, CardPreviewMode previewMode)
+    private static void OnHandHolderCreate_Postfix(NHandCardHolder __result)
     {
-        TrackedCards.Add(__instance);
-
-        if (pileType != PileType.Hand)
-        {
-            HideIcons(__instance);
-        }
+        RefreshCardOverlay(__result);
     }
 
-    [HarmonyPatch(typeof(CardPile), "InvokeContentsChanged")]
+    [HarmonyPatch(typeof(NHandCardHolder), "ShouldGlowGold", MethodType.Getter)]
     [HarmonyPostfix]
-    private static void CatchHandChange(CardPile __instance)
-    {
-        if (__instance.Type == PileType.Hand)
-        {
-            RefreshTrackedCardOverlays();
-        }
-    }
-
-    [HarmonyPatch(typeof(CardModel), "ShouldGlowGoldInternal", MethodType.Getter)]
-    [HarmonyPostfix]
-    public static void ShouldGlowGoldInternal_Postfix(CardModel __instance, ref bool __result)
+    public static void ShouldGlowGold_Postfix(NHandCardHolder __instance, ref bool __result)
     {
         if (!__result)
-            __result = HasAnyActiveThresholdIcon(__instance);
+            __result = HasAnyActiveThresholdIcon(__instance.CardNode?.Model);
     }
 
 
     public static void RefreshTrackedCardOverlays()
     {
         if(!HasAny()) return;
-        foreach (var card in TrackedCards)
+        foreach (var holder in GetActiveHolders())
         {
-            RefreshCardOverlay(card);
+            RefreshCardOverlay(holder);
         }
     }
 
-    private static void RefreshCardOverlay(NCard card)
+    private static void RefreshCardOverlay(NHandCardHolder holder)
     {
+        var card = holder.CardNode;
+        if (card == null) return;
         var model = card.Model;
-        if (model == null || !HasAny() || !Wiz.IsInMyHand(model))
+        if (model == null || !HasAny())
         {
             HideIcons(card);
             return;
@@ -119,11 +105,14 @@ public static class ThresholdRelicCardOverlay
         container.Visible = true;
     }
 
-    
-
-    private static bool HasAnyActiveThresholdIcon(CardModel card)
+    private static IReadOnlyList<NHandCardHolder> GetActiveHolders()
     {
-        if (!HasAny()) return false;
+        return NPlayerHand.Instance?.ActiveHolders ?? [];
+    }
+
+    private static bool HasAnyActiveThresholdIcon(CardModel? card)
+    {
+        if (!HasAny() || card == null) return false;
         
         CollectActiveIcons(card, _icons);
         return _icons.Count > 0;
