@@ -1,4 +1,5 @@
-﻿using MegaCrit.Sts2.Core.Combat;
+﻿using BaseLib.Abstracts;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -13,8 +14,11 @@ using MintySpire2.relicreminders.endturnbutton;
 
 namespace MintySpire2.util;
 
-public class MintyHooker : AbstractModel
+public class MintyHooker : CustomSingletonModel
 {
+    public MintyHooker() : base(true, true)
+    { }
+
     public override bool ShouldReceiveCombatHooks => true;
 
     // Rest site render
